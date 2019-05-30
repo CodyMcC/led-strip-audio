@@ -41,7 +41,7 @@ def decay(data):
 
 def main():
 
-    a = audio_processing.AudioProcessor(num_pixels)
+    a = audio_processing.AudioProcessor(num_pixels / 2)
     fps = audio_processing.FPS(30)
     while True:
         try:
@@ -49,13 +49,19 @@ def main():
             data = a.update()
             # a.print_bars()
             for index in range(len(data)):
-                value = a.mapping(0, 20, 0, 255, data[index]['max_volume'])
-                value_f = a.mapping(0, 20, 0, 255, data[index]['falling_max'])
+                value = a.mapping(0, a.max_calc_volume / 2, 0, 255, data[index]['max_volume'])
+                value_f = a.mapping(0, a.max_calc_volume / 2, 0, 255, data[index]['falling_max'])
                 #for i in range(group, group + 11):
                 #    pixels[i] = (0,int(value_f),int(value_f))
                 
+                
+
                 #pixels[int(a.mapping(0, 120, 120, 0, index * 3))] = (int(value_f * mod), int(value), int(value_f))
-                pixels[index] = (int(0), int(value_f), int(0))
+                red = a.mapping(0, a.max_calc_volume, 0, 1, index)
+                opp_index = int(a.mapping(0, 59, 119, 60, index))
+                pixels[index] = (int(value_f * red), int(0), int(value_f))
+                pixels[opp_index] = (int(value_f * red), int(0), int(value_f))
+
             pixels.show()
             fps.maintain()
             
